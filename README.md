@@ -3,7 +3,7 @@ A mini tool for nanopore reads (fastq files) extraction based on the start time 
 
 **The tool is still under development on signals (fast5) files**
 
-## Pre
+## Package
 ```text
 python packages:
     - tqdm
