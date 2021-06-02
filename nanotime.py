@@ -93,7 +93,7 @@ def generate_time_interval_fastq(fq_path, pool_start_time, time_interval = 1):
             return False
     
     
-    outpath         = 'time_intervval_fastqs/time_interval_0-%shrs' % time_interval
+    outpath         = 'time_interval_fastqs/time_interval_0-%shrs' % time_interval
     pathlib.Path(outpath).mkdir(parents=True, exist_ok=True)
     
     
