@@ -21,7 +21,7 @@ def get_args():
     parser.add_argument('-q', "--fqz", help="the path of compressed fastq file (e.g. *.fastq.gz)", required=True, type = str)
     parser.add_argument('-s', "--ses", help="the path to sequencing_summary.txt", required=True, type = str)
     parser.add_argument('-l', "--len", help="the length of run of sequencing (e.g. 1)", required=True, default=1, type=str)
-    parser.add_argument('-o', "--out", help="the dir of output", required=True, type = 'str')
+    parser.add_argument('-o', "--out", help="the path of output", required=True, type = str)
     return parser.parse_args()
 
 
@@ -36,7 +36,9 @@ def downsampling_fastq_creator(input_args):
 
     fq_dict = {}
     with gzip.open(input_args.fqz, 'rb') as file:
-        for line in file:
+        for _line in file:
+            line = _line.decode('utf-8')
+            # print(line)
             if line.startswith('@'):
                 readid = line[1:].split(" ")[0]
                 if readids_dict[readid] <= float(input_args.len) * 3600:  # convert hours to seconds
@@ -67,6 +69,7 @@ def readids_dict_collector(summary_path):
                         read_id_col    = ind
                     else:
                         next
+                # print("start_time_col", start_time_col, )
             else:
                 start_time = line_lst[start_time_col]
                 read_id    = line_lst[read_id_col]
@@ -75,14 +78,13 @@ def readids_dict_collector(summary_path):
     return readids_time_dict
 
 def fastq_saver(fq_dict, input_args):
-    output_dir = os.path.join(input_args.out, input_args.len)
+    output_dir = os.path.dirname(input_args.out)
     if not os.path.exists( output_dir ):
         os.makedirs(output_dir)
-    output_name = os.path.basename(input_args.fqz)
-    output_path = os.path.join( output_dir,  output_name)
-    output = gzip.open( output_path, 'wb' )
+
+    output = gzip.open( input_args.out, 'wb' )
     for readid in fq_dict:
-        output.write(fq_dict[readid])
+        output.write(fq_dict[readid].encode('utf-8'))
     output.close()
     return 
 
