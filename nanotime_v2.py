@@ -18,9 +18,10 @@ finds the earliest start_time among files.
 
 def get_args():
     parser = ArgumentParser(description="Nanotime v2. Nanopore reads extraction based on the start time of sequencing; The process on fast5(signal) file is still under development")
-    parser.add_argument("--fq",    help="the path of compressed fastq file (e.g. *.fastq.gz)", required=True, metavar = 'string')
-    parser.add_argument("--ss",    help="the path to sequencing_summary.txt", required=True, metavar = 'string')
-    parser.add_argument("--dur",   help="The length of run of sequencing (e.g. 1)", required=False, default=1, metavar = 'INT')
+    parser.add_argument('-q', "--fqz", help="the path of compressed fastq file (e.g. *.fastq.gz)", required=True, type = str)
+    parser.add_argument('-s', "--ses", help="the path to sequencing_summary.txt", required=True, type = str)
+    parser.add_argument('-l', "--len", help="the length of run of sequencing (e.g. 1)", required=True, default=1, type=str)
+    parser.add_argument('-o', "--out", help="the dir of output", required=True, type = 'str')
     return parser.parse_args()
 
 
@@ -31,19 +32,18 @@ def main():
 
 
 def downsampling_fastq_creator(input_args):
-    pool_start_time, readids_dict = readids_dict_collector(input_args.ss) # {readids, }
+    pool_start_time, readids_dict = readids_dict_collector(input_args.ses) # {readids, }
 
     fq_dict = {}
-    with gzip.open(input_args.fq, 'rb') as file:
+    with gzip.open(input_args.fqz, 'rb') as file:
         for line in file:
             if line.startswith('@'):
                 readid = line[1:].split(" ")[0]
-                if readids_dict[readid] - pool_start_time <= float(input_args.dur) * 3600:  # seconds
+                if readids_dict[readid] - pool_start_time <= float(input_args.len) * 3600:  # convert hours to seconds
                     qname  = line
                     fq_dict[qname] = qname
                 else:
                     qname  = None
-            
             else:
                 if qname is None:
                     continue
@@ -61,10 +61,11 @@ def readids_dict_collector(summary_path):
     return pool_start_time, readids_time_dict
 
 def fastq_saver(fq_dict, input_args):
-    if not os.path.exists("nanotime"):
-        os.mkdir("nanotime")
-    output_name = os.path.basename(input_args.fq).replace(".fastq.gz", "._%s.fastq.gz" % input_args.dur)
-    output_path = os.path.join( "nanotime",  output_name)
+    output_dir = os.path.join(input_args.out, input_args.len)
+    if not os.path.exists( output_dir ):
+        os.makedirs(output_dir)
+    output_name = os.path.basename(input_args.fqz)
+    output_path = os.path.join( output_dir,  output_name)
     output = gzip.open( output_path, 'wb' )
     for readid in fq_dict:
         output.write(fq_dict[readid])
