@@ -36,10 +36,10 @@ def downsampling_fastq_creator(input_args):
 
     fq_dict = {}
     with gzip.open(input_args.fqz, 'rb') as file:
-        for _line in file:
+        for lcn, _line in enumerate(file):
             line = _line.decode('utf-8')
             # print(line)
-            if line.startswith('@'):
+            if line.startswith('@') and lcn % 4 ==0:
                 readid = line[1:].split(" ")[0]
                 if readids_dict[readid] <= float(input_args.len) * 3600:  # convert hours to seconds
                     qname  = line
