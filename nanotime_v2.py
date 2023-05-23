@@ -2,7 +2,7 @@
 #coding=utf-8
 
 from argparse import ArgumentParser
-import os, gzip
+import os, gzip, pathlib
 # import numpy as np
 # import pandas as pd
 # from dateutil.parser import parse as dparse
@@ -78,11 +78,10 @@ def readids_dict_collector(summary_path):
     return readids_time_dict
 
 def fastq_saver(fq_dict, input_args):
-    output_dir = os.path.dirname(input_args.out)
-    if not os.path.exists( output_dir ):
-        os.makedirs(output_dir)
+    output_dir = pathlib.Path(input_args.out)
+    output_dir.parent.mkdir(parents=True, exist_ok=True)
 
-    output = gzip.open( input_args.out, 'wb' )
+    output = gzip.open( output_dir, 'wb' )
     for readid in fq_dict:
         output.write(fq_dict[readid].encode('utf-8'))
     output.close()

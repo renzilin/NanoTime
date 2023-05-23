@@ -36,13 +36,7 @@ optional arguments:
 ```sh
 git clone https://github.com/renzilin/NanoTime
 
-cd NanoTime/test
-
-# The output of barcode01.fastq should contain 2 reads.
-python ../nanotime.py --fq 20210601-pool1/barcode01.fq.gz --pool_dir 20210601-pool1 --duration 1 --ncpus 2
-
-# The output of barcode02 should be empty.
-python ../nanotime.py --fq 20210601-pool1/barcode02.fq.gz --pool_dir 20210601-pool1 --duration 1 --ncpus 2
+python nanotime_v2.py -q <input>/barcode01.fq.gz -s <where-is>/sequencing_summary.txt -l <length> -o <output>/barcode01.fq.gz
 
 ```
 
