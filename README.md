@@ -15,21 +15,18 @@ python packages:
 
 ## Usage
 ```text
-usage: nanotime.py [-h] --fq string --pool_dir string [--duration INT]
-                   [--ncpus INT]
+usage: nanotime_v2.py [-h] -q FQZ -s SES -l LEN -o OUT
 
-Nanotime v0.1. Nanopore reads extraction based on the start time of
-sequencing; The process on fast5(signal) file is still under development
+Nanotime v2. Nanopore reads extraction based on the start time of sequencing; The process on fast5(signal) file is still
+under development
 
 optional arguments:
   -h, --help         show this help message and exit
-  --fq string        the path of compressed fastq file (e.g. *.fq.gz or
-                     *.fastq.gz)
-  --pool_dir string  The directory of pool where fastq files were stored (e.g.
-                     ./test/20210601-pool1)
-  --duration INT     The time duration (hour) of sequencing (e.g. 1)
-  --ncpus INT        The number of cores used in scan process for parallel
-                     acceleration (e.g. 3)
+  -q FQZ, --fqz FQZ  the path of compressed fastq file (e.g. *.fastq.gz)
+  -s SES, --ses SES  the path to sequencing_summary.txt
+  -l LEN, --len LEN  the length of run of sequencing (e.g. 1)
+  -o OUT, --out OUT  the path of output
+
 ```
 
 ## Example
